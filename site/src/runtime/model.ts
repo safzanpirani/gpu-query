@@ -3,54 +3,20 @@
  *
  * Ported from spike/model.py. At 29,597 parameters over a handful of tokens the
  * whole pass is well under a millisecond on a CPU, so this runs as plain arrays
- * rather than through WebGPU. The architecture is the reason a GPU would help at
- * scale: step 5 is a prefix scan, which parallelises. At one short query it does
- * not need to.
+ * rather than through WebGPU. The WebGPU backend in webgpu.ts takes over for
+ * batches, where the prefix scan and the per-query independence pay for the
+ * dispatch. One short query stays here.
  *
  * Verified against PyTorch by `npm run parity`.
  */
 
-import weightsBlob from "./weights.json";
+import {
+  FEATURE_ROWS, HIDDEN, LABELS, PARAMETERS, TRANSFER_EXACT_AST, WEIGHTS,
+} from "./weights";
 
-const HIDDEN = 32;
+export { LABELS, PARAMETERS, FEATURE_ROWS, TRANSFER_EXACT_AST };
 
-interface Packed {
-  shape: number[];
-  scale: number;
-  data: string;
-}
-
-interface Blob {
-  featureRows: number;
-  hidden: number;
-  slots: number;
-  labels: string[];
-  parameters: number;
-  bits: number;
-  transferExactAst: number;
-  tensors: Record<string, Packed>;
-}
-
-const BLOB = weightsBlob as unknown as Blob;
-
-function decode(packed: Packed): Float32Array {
-  const binary = atob(packed.data);
-  const out = new Float32Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    // int8 two's complement, then the tensor scale.
-    const byte = binary.charCodeAt(i);
-    out[i] = ((byte << 24) >> 24) * packed.scale;
-  }
-  return out;
-}
-
-const W: Record<string, Float32Array> = {};
-for (const [name, packed] of Object.entries(BLOB.tensors)) W[name] = decode(packed);
-
-export const LABELS = BLOB.labels;
-export const PARAMETERS = BLOB.parameters;
-export const FEATURE_ROWS = BLOB.featureRows;
-export const TRANSFER_EXACT_AST = BLOB.transferExactAst;
+const W = WEIGHTS;
 
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
 
@@ -82,7 +48,7 @@ export function forward(
   neighbors: Array<[number, number]>,
 ): Forward {
   const T = rows.length;
-  const padding = BLOB.featureRows;
+  const padding = FEATURE_ROWS;
 
   // 1. Sum the embedding rows that fired for each token.
   const embedded: Float32Array[] = [];
@@ -171,7 +137,7 @@ export function forward(
   for (let c = 0; c < HIDDEN; c++) context[c] = sigmoid(gated[c]) * pooled[c];
 
   // 6. Head.
-  const roleCount = BLOB.labels.length;
+  const roleCount = LABELS.length;
   const logits: number[][] = [];
   const boundary: number[] = [];
   for (let t = 0; t < T; t++) {

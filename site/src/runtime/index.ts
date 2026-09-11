@@ -10,6 +10,7 @@
  */
 
 import { featurize } from "./featurize";
+import * as gpu from "./webgpu";
 import { LABELS, PARAMETERS, TRANSFER_EXACT_AST, argmax, forward } from "./model";
 import { buildIndex, enumOwners, resolve, tokenize } from "./schema";
 import type { Match, Schema } from "./schema";
@@ -134,4 +135,102 @@ export function parse(text: string, schema: Schema): ParseResult {
     clauses,
     micros: Math.round((performance.now() - started) * 1000),
   };
+}
+
+
+export type Backend = "auto" | "cpu" | "webgpu";
+
+/** WebGPU only repays its dispatch once there is a batch. gpu-time draws the
+ *  same line at 32 inputs. Below it, the CPU path wins outright. */
+export const GPU_THRESHOLD = 32;
+
+export interface BatchResult {
+  backend: "cpu" | "webgpu";
+  millis: number;
+  results: Array<{ tokens: string[]; roles: string[]; clauses: Clause[] }>;
+}
+
+export function gpuSupported(): boolean {
+  return gpu.supported();
+}
+
+export async function warmGpu(): Promise<boolean> {
+  return gpu.init();
+}
+
+/** Parse many queries at once. This is the case the architecture is for. */
+export async function parseBatch(
+  texts: string[],
+  schema: Schema,
+  backend: Backend = "auto",
+): Promise<BatchResult> {
+  const prepared = texts.map((text) => {
+    const tokens = tokenize(text);
+    const { rows, neighbors } = featurize(tokens, schema);
+    return { tokens, rows, neighbors };
+  });
+
+  const wantGpu =
+    backend === "webgpu" ||
+    (backend === "auto" && texts.length >= GPU_THRESHOLD && gpu.supported());
+
+  const started = performance.now();
+
+  if (wantGpu && (await gpu.init())) {
+    const raw = await gpu.runBatch({
+      rows: prepared.map((p) => p.rows),
+      neighbors: prepared.map((p) => p.neighbors),
+    });
+    const results = prepared.map((p, i) => {
+      const roles = raw[i].map((row) => LABELS[argmax(row.slice(0, LABELS.length))]);
+      return { tokens: p.tokens, roles, clauses: compile(p.tokens, roles, schema) };
+    });
+    return { backend: "webgpu", millis: performance.now() - started, results };
+  }
+
+  if (backend === "webgpu") throw new Error("WebGPU requested but unavailable");
+
+  const results = prepared.map((p) => {
+    const out = forward(p.rows, p.neighbors);
+    const roles = out.logits.map((row) => LABELS[argmax(row)]);
+    return { tokens: p.tokens, roles, clauses: compile(p.tokens, roles, schema) };
+  });
+  return { backend: "cpu", millis: performance.now() - started, results };
+}
+
+/** Run the same inputs through both backends and report the worst drift.
+ *  A kernel nobody checked is worse than no kernel. */
+export async function checkBackends(
+  texts: string[],
+  schema: Schema,
+): Promise<{ ok: boolean; maxLogitDelta: number; roleMismatches: number }> {
+  const prepared = texts.map((text) => {
+    const tokens = tokenize(text);
+    return { tokens, ...featurize(tokens, schema) };
+  });
+  if (!(await gpu.init())) return { ok: false, maxLogitDelta: NaN, roleMismatches: -1 };
+
+  const raw = await gpu.runBatch({
+    rows: prepared.map((p) => p.rows),
+    neighbors: prepared.map((p) => p.neighbors),
+  });
+
+  let maxLogitDelta = 0;
+  let roleMismatches = 0;
+  prepared.forEach((p, i) => {
+    const cpu = forward(p.rows, p.neighbors);
+    for (let t = 0; t < p.tokens.length; t++) {
+      for (let r = 0; r < LABELS.length; r++) {
+        maxLogitDelta = Math.max(maxLogitDelta, Math.abs(cpu.logits[t][r] - raw[i][t][r]));
+      }
+      maxLogitDelta = Math.max(
+        maxLogitDelta, Math.abs(cpu.boundary[t] - raw[i][t][LABELS.length]),
+      );
+      const a = LABELS[argmax(cpu.logits[t])];
+      const b = LABELS[argmax(raw[i][t].slice(0, LABELS.length))];
+      if (a !== b) roleMismatches++;
+    }
+  });
+
+  return { ok: roleMismatches === 0 && maxLogitDelta < 1e-3, maxLogitDelta, roleMismatches };
 }

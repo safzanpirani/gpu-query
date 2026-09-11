@@ -7,7 +7,9 @@
  * that rather than take it on faith.
  */
 
-import { PARAMETERS, parse } from "./runtime";
+import {
+  PARAMETERS, parse, parseBatch, checkBackends, gpuSupported, warmGpu,
+} from "./runtime";
 import type { Field, Kind, Schema } from "./runtime";
 
 const DEFAULT_SCHEMA: Schema = [
@@ -212,3 +214,68 @@ queryInput.value = EXAMPLES[0];
 renderExamples();
 renderSchema();
 run();
+
+// Test hook: lets the parity and benchmark checks run against a real device.
+(window as any).__gpu = {
+  supported: () => gpuSupported(),
+  async check(n = 40) {
+    const texts = Array.from({ length: n }, (_, i) => EXAMPLES[i % EXAMPLES.length]);
+    return checkBackends(texts, schema);
+  },
+  async bench(n = 512) {
+    const texts = Array.from({ length: n }, (_, i) => EXAMPLES[i % EXAMPLES.length]);
+    await warmGpu();
+    await parseBatch(texts, schema, "webgpu");            // warm
+    await parseBatch(texts, schema, "cpu");
+    const gpuRun = await parseBatch(texts, schema, "webgpu");
+    const cpuRun = await parseBatch(texts, schema, "cpu");
+    const same = JSON.stringify(gpuRun.results.map((r) => r.roles))
+      === JSON.stringify(cpuRun.results.map((r) => r.roles));
+    return {
+      n,
+      webgpuMs: +gpuRun.millis.toFixed(1),
+      cpuMs: +cpuRun.millis.toFixed(1),
+      speedup: +(cpuRun.millis / gpuRun.millis).toFixed(2),
+      rolesIdentical: same,
+    };
+  },
+};
+
+// Batch benchmark, run on the visitor's own hardware.
+const benchButton = $<HTMLButtonElement>("bench");
+const benchOut = $<HTMLSpanElement>("bench-out");
+benchButton.addEventListener("click", async () => {
+  if (!gpuSupported()) {
+    benchOut.textContent = "no WebGPU in this browser";
+    return;
+  }
+  benchButton.disabled = true;
+  benchOut.textContent = "warming…";
+  try {
+    const texts = Array.from({ length: 1024 }, (_, i) => EXAMPLES[i % EXAMPLES.length]);
+    await warmGpu();
+    await parseBatch(texts, schema, "webgpu");
+    const gpuRun = await parseBatch(texts, schema, "webgpu");
+    const cpuRun = await parseBatch(texts, schema, "cpu");
+    const speedup = (cpuRun.millis / gpuRun.millis).toFixed(1);
+    benchOut.innerHTML =
+      `cpu ${cpuRun.millis.toFixed(0)} ms · webgpu ${gpuRun.millis.toFixed(0)} ms ` +
+      `· <span class="win">${speedup}× faster</span>`;
+  } catch (error) {
+    benchOut.textContent = "benchmark failed, see console";
+    console.error(error);
+  } finally {
+    benchButton.disabled = false;
+  }
+});
+
+// Report backend parity on load, so the page never claims more than it checked.
+void (async () => {
+  if (!gpuSupported()) return;
+  const texts = Array.from({ length: 16 }, (_, i) => EXAMPLES[i % EXAMPLES.length]);
+  const check = await checkBackends(texts, schema);
+  if (!check.ok) {
+    $("bench-note").textContent =
+      "The WGSL kernel disagreed with the CPU path on this device, so batches stay on the CPU.";
+  }
+})();

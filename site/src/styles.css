@@ -259,3 +259,8 @@ footer {
   margin-top: 72px;
   padding-top: 20px;
 }
+
+.bench-run { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.bench-run button { font-size: 13px; padding: 7px 12px; }
+#bench-out { font-variant-numeric: tabular-nums; }
+#bench-out .win { color: var(--teal); }

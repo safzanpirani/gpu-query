@@ -12,8 +12,7 @@ anything  record  listens  and  performer  containing  uncensored  please
    { field: "artist", cmp: "contains", value: "uncensored" }]
 ```
 
-This is a feasibility spike. Nothing is published to npm, and the WebGPU kernel
-and the quantised export do not exist yet.
+This is a feasibility spike. Nothing is published to npm.
 
 ## How it works
 
@@ -41,6 +40,27 @@ than guessing at one.
 The architecture is a port of gpu-time's `TimeTagger`. Only the lexicon, the
 label set, the generator and the CPU resolver are new.
 
+## Backends
+
+Two backends run the same 40 KiB of int6 weights: plain TypeScript, and a WGSL
+compute kernel with one workgroup per query and one thread per hidden channel.
+Every channel is independent through the recurrence, so the scan runs as a
+sequential walk inside each thread while 32 channels and every query in the batch
+run at once.
+
+A single short query stays on the CPU, because dispatch and readback cost more
+than the parse. WebGPU takes over for batches. Measured on an M4, 1024 queries:
+
+| batch | CPU | WebGPU | |
+|---|---|---|---|
+| 32 | 7.0 ms | 2.6 ms | 2.7x |
+| 256 | 40.6 ms | 3.7 ms | 11.0x |
+| 1024 | 208.5 ms | 15.4 ms | 13.5x |
+| 4096 | 1084.6 ms | 67.1 ms | 16.2x |
+
+Roles were identical between backends at every size. The site runs this check on
+load and falls back to the CPU if the kernel ever disagrees.
+
 ## Accuracy
 
 Trained on schemas drawn from issue trackers, mail, files and commits. Evaluated
@@ -59,8 +79,8 @@ Removing the hashed word-identity feature rows raised transfer from 0.9865 to
 0.9888. The model reads structure, and vocabulary hashes crowd it out.
 
 Both figures come from a generated evaluation corpus of four thousand queries.
-They do not establish accuracy on real user phrasing, and nothing here has been
-benchmarked in a browser.
+They do not establish accuracy on real user phrasing. The timings above are
+browser measurements on one machine, not a cross-device benchmark.
 
 ## Development
 
@@ -85,6 +105,7 @@ exactly 1.0000. Below that you are measuring resolver bugs rather than the model
 ## Repository
 
 - `spike/`: generator, featurizer, fuzzy schema matcher, compiler, training
+- `site/`: the browser runtime, the WGSL kernel, and the demo page
 - `video/`: the explainer film and its storyboard
 
 ## Video

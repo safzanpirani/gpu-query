@@ -22,6 +22,7 @@
       <nav>
         <a href="https://github.com/safzanpirani/gpu-query">source</a>
         <a href="#how">how it works</a>
+        <a href="#backends">backends</a>
         <a href="#accuracy">accuracy</a>
       </nav>
     </header>
@@ -31,8 +32,9 @@
         <h1>A search bar that parses itself.</h1>
         <p>
           A <strong id="param-count">29,597</strong>-parameter model turns a typed
-          phrase into a structured filter. It is running in this tab right now, on
-          your CPU, and it has never seen the schema below.
+          phrase into a structured filter. It is running in this tab right now,
+          on your CPU for one query and on WebGPU for a batch, and it has never
+          seen the schema below.
         </p>
       </section>
 
@@ -99,11 +101,30 @@
           and single-character typos.
         </p>
         <p>
-          The scan is the reason the architecture suits a GPU: it is a blocked
-          parallel prefix scan. At one short query it does not need one, so what
-          runs here is plain TypeScript over
-          <span id="weight-size">40</span> KiB of int6 weights, checked against the
-          PyTorch checkpoint to 6e-6.
+          The scan is the reason the architecture suits a GPU. There are two
+          backends over the same <span id="weight-size">40</span> KiB of int6
+          weights: plain TypeScript, and a WGSL compute kernel running one
+          workgroup per query. Both are checked against the PyTorch checkpoint,
+          and against each other, to within 1e-3.
+        </p>
+      </section>
+
+      <section class="prose" id="backends">
+        <h2>Backends</h2>
+        <p>
+          The query above parses on the CPU, because one short phrase is faster
+          there than a WebGPU dispatch and readback. The architecture pays off on
+          batches: every query is an independent workgroup and the recurrence is a
+          prefix scan, so 32 channels and every query in the batch run at once.
+        </p>
+        <div class="bench-run">
+          <button id="bench">run 1024 queries on both</button>
+          <span id="bench-out" class="timing"></span>
+        </div>
+        <p class="caveat" id="bench-note">
+          Measured in your browser, on your hardware, when you press the button.
+          The WGSL kernel is checked against the CPU path on every load; roles must
+          match exactly and logits to within 1e-3.
         </p>
       </section>
 
@@ -134,8 +155,9 @@
         <p class="caveat">
           Both figures come from a generated evaluation corpus of four thousand
           queries. They do not establish accuracy on real user phrasing. This is a
-          feasibility spike, not a library, and nothing here has been benchmarked
-          in a browser beyond the timing shown above.
+          feasibility spike rather than a library: there is no published package,
+          and the quantised weights here are decoded to f32 at load rather than
+          computed in int6.
         </p>
       </section>
 
