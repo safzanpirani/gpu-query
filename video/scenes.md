@@ -35,21 +35,22 @@ the same.
 - Where nodes or channels are sampled for legibility, the bottom caption says
   so.
 - The measured transfer result is stated once, with its corpus named.
-- No speed claims. Nothing has been benchmarked in a browser yet.
+- No speed claims in the film. The project's browser timings live on the site
+  and in the root README, not here.
 - The closing states experimental status.
 
 ## Scenes
 
 | # | Seconds | Beat | What is on screen | Real data |
 |---|---|---|---|---|
-| 1 | 0–9 | The ask | A search bar. `unread from sarah last week with attachments` types on. Two failed paths flash: a DSL cheatsheet, then a network request to an LLM that greys out. Caption: `no request leaves the page`. | — |
-| 2 | 9–19 | One mechanical scan | The phrase separates into tokens. Under three representative tokens, compact feature marks appear: kind, length bucket, shape, case. Captions: `one scan` → `sparse feature rows`. | Real row IDs from `featurize.rows_for` |
-| 3 | 19–32 | The schema stays outside | **The scene that carries the film.** The app's schema panel slides in: `unread: bool`, `sender: text`, `received: date`. Arrows carry it toward the model and are *cut* at the boundary — the field names visibly drop away. What passes through instead: `matched a field · kind bool`, `matched a value of the nearest preceding field`, `distance to field: 1`. Caption: `the model never sees a field name`. | Real match rows |
-| 4 | 32–44 | Context, both directions | 32-channel state grids rise from the token strip. A gated signal sweeps left to right, then right to left, grids updating as it arrives. Caption: `state[t] = gate · state[t-1] + candidate`. | Real forward/backward states |
-| 5 | 44–54 | Scores | For one token, the twelve role scores grow from zero. `VALUE` wins. A separate clause-boundary score is shown apart. | Real logits |
-| 6 | 54–64 | Roles land, code takes over | Roles settle onto the token strip. The model half greys out; a `typescript` panel lights up. `band` resolves to `artist` — an alias the weights never saw. | Real predictions |
-| 7 | 64–76 | The result | Two schema families face each other: trained on `issues · mail · files · commits`, evaluated on `contacts · music · recipes · shipments`, with a struck-through line showing zero shared vocabulary. The number lands: `0.9865 exact match`. Then the ablation: removing every word-identity row *raised* the score. | Measured |
-| 8 | 76–82 | Lockup | `gpu-query` wordmark. `29,597 parameters · runs on your machine · experimental`. | — |
+| 1 | 0-9 | The ask | A search bar. `unread from sarah last week with attachments` types on. Two failed paths flash: a DSL cheatsheet, then a network request to an LLM that greys out. Caption: `no request leaves the page`. | — |
+| 2 | 9-19 | One mechanical scan | The phrase separates into tokens. Under three representative tokens, compact feature marks appear: kind, length bucket, shape, case. Captions: `one scan` → `sparse feature rows`. | Real row IDs from `featurize.rows_for` |
+| 3 | 19-32 | The schema stays outside | **The scene that carries the film.** The app's schema panel slides in: `unread: bool`, `sender: text`, `received: date`. Arrows carry it toward the model and are *cut* at the boundary, and the field names visibly drop away. What passes through instead: `matched a field · kind bool`, `matched a value of the nearest preceding field`, `distance to field: 1`. Caption: `the model never sees a field name`. | Real match rows |
+| 4 | 32-44 | Context, both directions | 32-channel state grids rise from the token strip. A gated signal sweeps left to right, then right to left, grids updating as it arrives. Caption: `state[t] = gate · state[t-1] + candidate`. | Real forward/backward states |
+| 5 | 44-54 | Scores | For one token, the twelve role scores grow from zero. `VALUE` wins. A separate clause-boundary score is shown apart. | Real logits |
+| 6 | 54-64 | Roles land, code takes over | Roles settle onto the token strip. The model half greys out; a `typescript` panel lights up. `band` resolves to `artist`, an alias the weights never saw. | Real predictions |
+| 7 | 64-76 | The result | Two schema families face each other: trained on `issues · mail · files · commits`, evaluated on `contacts · music · recipes · shipments`, with a struck-through line showing zero shared vocabulary. The number lands: `0.9888 exact match`. Then the ablation: removing every word-identity row *raised* the score. | Measured |
+| 8 | 76-82 | Lockup | `gpu-query` wordmark. `29,597 parameters · cpu and webgpu · experimental`. | — |
 
 ## Scene notes
 
@@ -63,5 +64,5 @@ score is not real-user accuracy. The caption names the corpus so the number
 cannot be read as a general claim.
 
 **The token strip persists from scene 2 to scene 6.** Same mobjects,
-transformed — never rebuilt. That continuity is what makes gpu-lexer's film
+transformed rather than rebuilt. That continuity is what makes gpu-lexer's film
 read as one pipeline rather than eight slides.

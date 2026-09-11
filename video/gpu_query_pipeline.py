@@ -508,7 +508,7 @@ class GpuQueryPipeline(VoiceoverScene):
         mark = mono("gpu-query", size=52, color=INK).shift(UP * 0.5)
         facts = VGroup(
             mono(f"{CKPT['parameters']:,} parameters", size=22, color=MUTED),
-            mono("runs on your machine  ·  no request leaves the page", size=22,
+            mono("cpu and webgpu  ·  no request leaves the page", size=22,
                  color=MUTED),
             mono("experimental", size=22, color=AMBER),
         ).arrange(DOWN, buff=0.24).next_to(mark, DOWN, buff=0.6)

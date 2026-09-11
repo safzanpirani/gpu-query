@@ -44,9 +44,9 @@ uv run python train.py --device mps --epochs 40 --samples 60000 \
 `record_trace` enabled and writes `trace.json`: the summed embeddings, encoded
 states, gates, forward and backward scans, combined states, all twelve role
 logits, the boundary logit, the named feature rows that fired, and the schema
-resolution for every token. It re-checks the result two ways before writing —
-predicted labels against gold labels, and the compiled filter against the gold
-filter — and both must agree.
+resolution for every token. It re-checks the result two ways before writing,
+comparing predicted labels against gold labels and the compiled filter against
+the gold filter. Both must agree.
 
 Every activation, score and label on screen is read from that file. Nothing is
 invented, rounded into a nicer shape, or hand-placed.
@@ -63,7 +63,7 @@ carrying both hard cases at once. In this schema:
 
 - `record` and `performer` are **aliases** for `album` and `artist`. The model
   never saw either word; the compiler resolves them afterward from the schema.
-- `listens` and `uncensored` are **values that are also field names** —
+- `listens` and `uncensored` are **values that are also field names**.
   `listens` is an alias of the `plays` field, `uncensored` of `explicit`. A
   lookup calls both FIELD. The model calls both VALUE, from context alone.
 
@@ -72,9 +72,10 @@ training. That is the claim the film makes, so the trace honours it.
 
 ## What the film does not claim
 
-- **No speed claims.** Nothing here has been benchmarked in a browser. The
-  architecture maps to a WebGPU prefix scan; this film is a schematic, not
-  profiling footage.
+- **No speed claims in the film.** The animation is a schematic and contains no
+  profiling footage. The project does have a WebGPU backend and measured browser
+  timings; they live on the site and in the root README, where a reader can rerun
+  them.
 - **The quoted 0.9888 is a generated-corpus score**, on four thousand queries
   over evaluation-bank schemas. The caption says so on screen. It is not a
   measurement of real user phrasing, and both reference model cards are
@@ -89,5 +90,5 @@ training. That is the claim the film makes, so the trace honours it.
 29,597 parameters, 532 feature rows, 32 state channels, 16 head gates, 64 head
 hidden values, 12 role outputs plus one clause-boundary output. Word-identity
 feature rows are disabled in this checkpoint, which is why "the model never sees
-a field name" is literal rather than a simplification — and it is also the
-better model, scoring 0.9888 against 0.9865 with those rows enabled.
+a field name" is literal rather than a simplification. It is also the better
+model, scoring 0.9888 against 0.9865 with those rows enabled.
