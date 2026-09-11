@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>gpu-query</title>
+    <meta
+      name="description"
+      content="An experimental neural parser for app search bars. A 29,597-parameter model turns a typed phrase into a structured filter without ever learning your field names."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <span class="mark">gpu-query</span>
+      <nav>
+        <a href="https://github.com/safzanpirani/gpu-query">source</a>
+        <a href="#how">how it works</a>
+        <a href="#accuracy">accuracy</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <h1>A search bar that parses itself.</h1>
+        <p>
+          A <strong id="param-count">29,597</strong>-parameter model turns a typed
+          phrase into a structured filter. It is running in this tab right now, on
+          your CPU, and it has never seen the schema below.
+        </p>
+      </section>
+
+      <section class="bench">
+        <div class="pane pane-schema">
+          <div class="pane-head">
+            <h2>your schema</h2>
+            <div class="pane-actions">
+              <button id="scramble" title="Rename every field to nonsense">
+                scramble names
+              </button>
+              <button id="reset">reset</button>
+            </div>
+          </div>
+          <p class="pane-note">
+            Edit anything. The field names never reach the model, so renaming them
+            changes the answer but not the parse.
+          </p>
+          <div id="schema-rows"></div>
+          <button id="add-field" class="ghost">+ field</button>
+        </div>
+
+        <div class="pane pane-query">
+          <div class="pane-head">
+            <h2>query</h2>
+            <span class="timing"><span id="micros">—</span> µs</span>
+          </div>
+          <input
+            id="query"
+            type="text"
+            spellcheck="false"
+            autocomplete="off"
+            aria-label="query"
+          />
+          <div class="examples" id="examples"></div>
+
+          <h3>roles</h3>
+          <div id="strip" class="strip"></div>
+
+          <h3>filter</h3>
+          <pre id="filter" class="filter"></pre>
+        </div>
+      </section>
+
+      <section class="prose" id="how">
+        <h2>How it works</h2>
+        <p>
+          One mechanical scan splits the phrase into tokens and emits sparse
+          feature rows for each one: shape, case, length bucket, operator-lexicon
+          membership. Your schema is added as three more kinds of row, none of
+          which carry a field name.
+        </p>
+        <ul>
+          <li>this token matched a field, and the field has this kind</li>
+          <li>this token matched a value belonging to the nearest preceding field</li>
+          <li>this token is one position away from a field</li>
+        </ul>
+        <p>
+          The model sums those rows, mixes nearby evidence with a five-token
+          convolution and two neighbour gathers, then carries context in both
+          directions with gated affine scans. A two-layer head emits one of twelve
+          roles per token. Ordinary TypeScript compiles the roles into a filter and
+          resolves surface forms back to real fields, tolerating aliases, plurals
+          and single-character typos.
+        </p>
+        <p>
+          The scan is the reason the architecture suits a GPU: it is a blocked
+          parallel prefix scan. At one short query it does not need one, so what
+          runs here is plain TypeScript over
+          <span id="weight-size">40</span> KiB of int6 weights, checked against the
+          PyTorch checkpoint to 6e-6.
+        </p>
+      </section>
+
+      <section class="prose" id="accuracy">
+        <h2>Accuracy</h2>
+        <p>
+          Trained on schemas drawn from issue trackers, mail, files and commits.
+          Evaluated on contacts, music, recipes and shipments, which share no field
+          word, alias or enum value with training.
+        </p>
+        <table>
+          <tbody>
+            <tr>
+              <td>heldout (training schemas, fresh seed)</td>
+              <td class="num">1.0000</td>
+            </tr>
+            <tr class="highlight">
+              <td>transfer (unseen schemas)</td>
+              <td class="num">0.9888</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          The heldout row only checks whether the model memorised its training
+          seed. The transfer row is the result. Removing the hashed word-identity
+          feature rows raised transfer from 0.9865 to 0.9888.
+        </p>
+        <p class="caveat">
+          Both figures come from a generated evaluation corpus of four thousand
+          queries. They do not establish accuracy on real user phrasing. This is a
+          feasibility spike, not a library, and nothing here has been benchmarked
+          in a browser beyond the timing shown above.
+        </p>
+      </section>
+
+      <footer>
+        <span>MIT</span>
+        <span>
+          method from
+          <a href="https://github.com/vercel-labs/gpu-lexer">gpu-lexer</a> and
+          <a href="https://github.com/arikchakma/gpu-time">gpu-time</a>
+        </span>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

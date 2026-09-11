@@ -14,3 +14,6 @@ uv.lock
 PAPERCUTS.md
 qa/
 qa-final/
+site/node_modules/
+site/dist/
+HANDOFF-gpu-log.md
