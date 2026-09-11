@@ -1,0 +1,618 @@
+{
+  "config": {
+    "epochs": 40,
+    "samples": 60000,
+    "batch": 512,
+    "learning_rate": 0.003,
+    "device": "mps",
+    "seed": 0,
+    "qat_start": 6,
+    "no_word_identity": false,
+    "run": "hard-baseline"
+  },
+  "parameters": 29597,
+  "featureRows": 532,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.1007,
+      "seconds": 14.6,
+      "heldout": {
+        "tokenAccuracy": 0.8671301929428125,
+        "exactAst": 0.58675,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.8636684054701819,
+        "exactAst": 0.568,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 2,
+      "loss": 0.3479,
+      "seconds": 3.7,
+      "heldout": {
+        "tokenAccuracy": 0.9992699461150704,
+        "exactAst": 0.99475,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9959114620047934,
+        "exactAst": 0.974,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 3,
+      "loss": 0.213,
+      "seconds": 4.9,
+      "heldout": {
+        "tokenAccuracy": 0.9999652355292891,
+        "exactAst": 0.99975,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9970393345551952,
+        "exactAst": 0.981,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 4,
+      "loss": 0.2011,
+      "seconds": 7.1,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9969335965035951,
+        "exactAst": 0.98075,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 5,
+      "loss": 0.1969,
+      "seconds": 3.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9971098265895953,
+        "exactAst": 0.983,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 6,
+      "loss": 0.195,
+      "seconds": 3.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9976385168475962,
+        "exactAst": 0.98675,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 7,
+      "loss": 0.194,
+      "seconds": 3.4,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9970393345551952,
+        "exactAst": 0.983,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 8,
+      "loss": 0.1934,
+      "seconds": 3.0,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973213026927957,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 9,
+      "loss": 0.193,
+      "seconds": 3.5,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973213026927957,
+        "exactAst": 0.985,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 10,
+      "loss": 0.1927,
+      "seconds": 3.4,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9976032708303961,
+        "exactAst": 0.9865,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 11,
+      "loss": 0.1925,
+      "seconds": 3.3,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9975680248131961,
+        "exactAst": 0.98625,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 12,
+      "loss": 0.1924,
+      "seconds": 3.1,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973565487099958,
+        "exactAst": 0.98475,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 13,
+      "loss": 0.1923,
+      "seconds": 3.5,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9969335965035951,
+        "exactAst": 0.982,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 14,
+      "loss": 0.1922,
+      "seconds": 2.6,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9972155646411955,
+        "exactAst": 0.98425,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 15,
+      "loss": 0.1922,
+      "seconds": 3.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973917947271959,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 16,
+      "loss": 0.1922,
+      "seconds": 4.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973213026927957,
+        "exactAst": 0.9845,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 17,
+      "loss": 0.1921,
+      "seconds": 4.5,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997462286761596,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 18,
+      "loss": 0.1921,
+      "seconds": 3.0,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.986,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 19,
+      "loss": 0.1921,
+      "seconds": 4.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973565487099958,
+        "exactAst": 0.98475,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 20,
+      "loss": 0.1921,
+      "seconds": 5.8,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9974270407443959,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 21,
+      "loss": 0.1921,
+      "seconds": 4.8,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.98575,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 22,
+      "loss": 0.192,
+      "seconds": 3.7,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973565487099958,
+        "exactAst": 0.985,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 23,
+      "loss": 0.192,
+      "seconds": 3.5,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973213026927957,
+        "exactAst": 0.98475,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 24,
+      "loss": 0.192,
+      "seconds": 3.1,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9972860566755957,
+        "exactAst": 0.9845,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 25,
+      "loss": 0.192,
+      "seconds": 5.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997462286761596,
+        "exactAst": 0.98575,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 26,
+      "loss": 0.192,
+      "seconds": 4.3,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9974270407443959,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 27,
+      "loss": 0.192,
+      "seconds": 2.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973917947271959,
+        "exactAst": 0.9845,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 28,
+      "loss": 0.192,
+      "seconds": 3.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9974270407443959,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 29,
+      "loss": 0.192,
+      "seconds": 3.1,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9974270407443959,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 30,
+      "loss": 0.192,
+      "seconds": 3.4,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 31,
+      "loss": 0.192,
+      "seconds": 2.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9973917947271959,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 32,
+      "loss": 0.192,
+      "seconds": 3.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 33,
+      "loss": 0.192,
+      "seconds": 2.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.986,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 34,
+      "loss": 0.192,
+      "seconds": 3.0,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997462286761596,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 35,
+      "loss": 0.192,
+      "seconds": 3.1,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997497532778796,
+        "exactAst": 0.9855,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 36,
+      "loss": 0.192,
+      "seconds": 2.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997462286761596,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 37,
+      "loss": 0.192,
+      "seconds": 4.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9976032708303961,
+        "exactAst": 0.98625,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 38,
+      "loss": 0.192,
+      "seconds": 3.6,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.997462286761596,
+        "exactAst": 0.98525,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 39,
+      "loss": 0.192,
+      "seconds": 4.2,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9976032708303961,
+        "exactAst": 0.98625,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 40,
+      "loss": 0.192,
+      "seconds": 3.9,
+      "heldout": {
+        "tokenAccuracy": 1.0,
+        "exactAst": 1.0,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.9976385168475962,
+        "exactAst": 0.9865,
+        "sequences": 4000
+      }
+    }
+  ],
+  "totalSeconds": 186.2
+}

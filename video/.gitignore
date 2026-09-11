@@ -1,0 +1,4 @@
+manim-env/
+media/
+tts-cache/
+model.pt

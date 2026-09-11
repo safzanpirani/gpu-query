@@ -1,0 +1,16 @@
+reference/
+gpu-log/
+spike-pii/
+CLAUDE.md
+
+.venv/
+manim-env/
+__pycache__/
+*.pyc
+media/
+tts-cache/
+*.pt
+uv.lock
+PAPERCUTS.md
+qa/
+qa-final/
