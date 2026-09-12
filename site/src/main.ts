@@ -254,7 +254,13 @@ benchButton.addEventListener("click", async () => {
   try {
     const texts = Array.from({ length: 1024 }, (_, i) => EXAMPLES[i % EXAMPLES.length]);
     await warmGpu();
-    await parseBatch(texts, schema, "webgpu");
+    // Warm both sides equally, twice. A single warm pass leaves the GPU path
+    // paying pipeline setup and the JIT still cold, which understates it by
+    // roughly 3x and would not match the numbers quoted anywhere else.
+    for (let i = 0; i < 2; i++) {
+      await parseBatch(texts, schema, "webgpu");
+      await parseBatch(texts, schema, "cpu");
+    }
     const gpuRun = await parseBatch(texts, schema, "webgpu");
     const cpuRun = await parseBatch(texts, schema, "cpu");
     const speedup = (cpuRun.millis / gpuRun.millis).toFixed(1);
