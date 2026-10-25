@@ -1,0 +1,64 @@
+{
+  "config": {
+    "epochs": 3,
+    "samples": 4000,
+    "batch": 512,
+    "learning_rate": 0.003,
+    "device": "cpu",
+    "seed": 0,
+    "qat_start": 2,
+    "no_word_identity": false,
+    "run": "mac-cpu-tiny",
+    "save": null
+  },
+  "parameters": 29597,
+  "featureRows": 532,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 3.1426,
+      "seconds": 17.1,
+      "heldout": {
+        "tokenAccuracy": 0.21348861463584218,
+        "exactAst": 0.0695,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.21612857747074582,
+        "exactAst": 0.075,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 2,
+      "loss": 3.11,
+      "seconds": 16.0,
+      "heldout": {
+        "tokenAccuracy": 0.23177472622979314,
+        "exactAst": 0.08775,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.2326237135203722,
+        "exactAst": 0.0925,
+        "sequences": 4000
+      }
+    },
+    {
+      "epoch": 3,
+      "loss": 3.0882,
+      "seconds": 15.4,
+      "heldout": {
+        "tokenAccuracy": 0.2375456283678081,
+        "exactAst": 0.0925,
+        "sequences": 4000
+      },
+      "transfer": {
+        "tokenAccuracy": 0.23776963203158044,
+        "exactAst": 0.096,
+        "sequences": 4000
+      }
+    }
+  ],
+  "totalSeconds": 94.9
+}
